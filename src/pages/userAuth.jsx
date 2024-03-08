@@ -1,22 +1,30 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import InputBox from '../components/inputbox'
 import { faUser, faEnvelope, faKey  } from "@fortawesome/free-solid-svg-icons";
 import GoogleIcon from '@mui/icons-material/Google';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useRef } from 'react';
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+import { storeSession } from '../common/session';
+import { UserContext } from '../App';
 
 export default function UserAuth({type}) {
 
   const authForm = useRef();
 
+  let { userAuth, setUserAuth } = useContext(UserContext)
+
+  console.log(userAuth.access_token);
   const serverUrl = "http://localhost:3000" ;
   const userauthServer = (serverRoute, formData) =>{
-    console.log(serverUrl + serverRoute, formData);
+    // console.log(serverUrl + serverRoute, formData);
       axios.post(serverUrl + serverRoute, formData)
       .then(({data}) =>{
-        console.log(data);
+        storeSession("user",JSON.stringify(data))
+        // console.log(sessionStorage);
+
+        setUserAuth(data)
       }).catch(({ response }) =>{
         toast.error(response.data.error);
       })
@@ -60,6 +68,8 @@ export default function UserAuth({type}) {
   }
   
   return (
+    userAuth.access_token ? <Navigate to='/' />
+    :
     <section className='h-cover flex items-center justify-center'> 
     <Toaster />
       <form ref={authForm} className='w-[80%] max-w-[400px]'>
