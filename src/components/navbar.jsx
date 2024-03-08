@@ -1,13 +1,22 @@
 import logo from "../images/blogging.png"
 import { Link, Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faFilePen } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faFilePen, faBell } from '@fortawesome/free-solid-svg-icons';
 
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../App";
+import UserNavigation from "./usernavigation";
  
 const Navbar = () =>{
 
     const [ search , setSearch ] = useState(false);
+
+    const [ userNav , setUserNav ] = useState(false);
+
+    const handleuserNav = () =>{
+        setUserNav(currentVal => !currentVal);
+    }
+    const { userAuth, userAuth: {access_token, profile_img }} = useContext(UserContext)
     return (
         <>
         <nav className="navbar">
@@ -35,12 +44,40 @@ const Navbar = () =>{
                  <FontAwesomeIcon icon={faFilePen} />
                     <p> Write </p>
                 </Link>
-                <Link to='/signin' className="btn-dark py-2">
-                    Sign In
-                </Link>
-                <Link to='/signup' className="btn-light hidden md:block py-2">
-                    Sign Up
-                </Link>
+               
+                {
+                    access_token ? 
+                    <>
+                     <Link to='/dashboard/notification' >
+                        <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10">
+                            <FontAwesomeIcon icon={faBell} />
+                        </button>                       
+                    </Link>
+
+                    <div className="relative" onClick={handleuserNav}>
+                        <button className="q-12 h-12 mt-1">
+                            <img src={profile_img} className="w-full h-full
+                            object-cover rounded-full "/>
+                        </button>
+
+                        {
+                            userNav ? <UserNavigation /> :
+                            ""
+                        }
+                    </div>
+                    </>
+                    :
+                    <>
+                     <Link to='/signin' className="btn-dark py-2">
+                        Sign In
+                    </Link>
+                    <Link to='/signup' className="btn-light hidden md:block py-2">
+                        Sign Up
+                    </Link>
+                    </>
+                }
+
+               
            </div>
          
            
