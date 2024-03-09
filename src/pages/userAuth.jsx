@@ -8,6 +8,7 @@ import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 import { storeSession } from '../common/session';
 import { UserContext } from '../App';
+import { authWithGoogle } from '../common/firebase';
 
 export default function UserAuth({type}) {
 
@@ -66,6 +67,26 @@ export default function UserAuth({type}) {
    
     userauthServer(serverRoute, formData);
   }
+
+
+  const handleGoogleAuth = (e) =>{
+     
+    e.preventDefault();
+
+    authWithGoogle().then(user =>{
+       let serverRoute = "/google-auth";
+
+       let formData = {
+        access_token : user.accessToken
+       }
+
+       userauthServer(serverRoute, formData)
+    
+    }).catch(err =>{
+      toast.error("Trouble in logging");
+      return console.log(err);
+    })
+  }
   
   return (
     userAuth.access_token ? <Navigate to='/' />
@@ -114,7 +135,9 @@ export default function UserAuth({type}) {
                     <hr className='w-1/2 border-black'/>
                 </div>
 
-                <button className='btn-light center'>
+                <button className='btn-light center'
+                onClick={handleGoogleAuth}
+                >
                   <GoogleIcon  className='mr-3'/>
                     Continue With Google
                 </button>
