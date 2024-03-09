@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import logo from "../images/blogging.png"
 import blogbanner from "../images/blog banner.png"
 import { uploadImage } from "../common/aws";
@@ -6,20 +6,30 @@ import { useContext, useEffect } from "react";
 import { Toaster, toast } from 'react-hot-toast';
 import { EditorContext } from "../pages/editor";
 import EditorJS from "@editorjs/editorjs";
-import { tools } from './tools.jsx'
+import { tools } from './tools.jsx';
+import { UserContext } from "../App.jsx";
+import axios from "axios";
+
 
 const BlogEditor = () =>{
 
     
     let { blog, blog: { title, banner, content, tags, des }, setBlog, setEditorState, textEditor, setTextEditor} = useContext(EditorContext);
 
+    let { userAuth : { access_token } } = useContext(UserContext);
+
+    let navigate = useNavigate();
+
     useEffect(() =>{
-        setTextEditor(new EditorJS({
-            holderId: "textEditor",
-            data: content,
-            placeholder: "Let's Write",
-            tools: tools
-        }))
+        if(!textEditor.isReady){
+            setTextEditor(new EditorJS({
+                holderId: "textEditor",
+                data: content,
+                placeholder: "Let's Write",
+                tools: tools
+            }))
+        }
+       
     }, [])
 
     const handleBanner = (e) =>{
@@ -81,6 +91,49 @@ const handlePublishEvent = () =>{
     }
 }
 
+const handleSaveDraft = (e) =>{
+
+    if(e.target.className.includes("disable")){
+        return;
+    }
+
+    if(!title.length){
+        return toast.error("Write Blog Title before saving as a draft")
+    }
+    
+    const serverUrl = "http://localhost:3000";
+    let loadingToast = toast.loading("Saving..");
+    e.target.classList.add('disable');
+
+    if(textEditor.isReady){
+        textEditor.save().then( content =>{
+  
+            let blogObj = {
+                title, banner, des, content, tags, draft: true
+            } 
+
+            axios.post(serverUrl + "/create-blog",  blogObj, {
+                headers:{
+                    'Authorization' : `Bearer ${access_token}`
+                }
+            })
+            .then(() =>{
+                e.target.classList.remove('disable');
+                toast.dismiss(loadingToast);
+                toast.success("Saved");
+                setTimeout(() =>{
+                    navigate("/")
+                }, 500);
+            }).catch(( { response } ) =>{
+                e.target.classList.remove('disable');
+                toast.dismiss(loadingToast);
+        
+                return toast.error(response.data.error)
+            })
+        })
+    }
+   
+}
 
     return (
         <>
@@ -96,7 +149,9 @@ const handlePublishEvent = () =>{
               onClick={ handlePublishEvent }>
                 Publish
               </button>
-              <button className="btn-dark py-2">
+              <button className="btn-dark py-2"
+              onClick={handleSaveDraft}
+              >
                 Savedraft
               </button>
            </div>
