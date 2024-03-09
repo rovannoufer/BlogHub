@@ -1,4 +1,4 @@
 node_modules
 .env
 
-/common/firebase.jsx
+common/firebase.jsx

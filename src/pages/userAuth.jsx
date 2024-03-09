@@ -16,7 +16,7 @@ export default function UserAuth({type}) {
 
   let { userAuth, setUserAuth } = useContext(UserContext)
 
-  console.log(userAuth.access_token);
+  // console.log(userAuth.access_token);
   const serverUrl = "http://localhost:3000" ;
   const userauthServer = (serverRoute, formData) =>{
     // console.log(serverUrl + serverRoute, formData);
