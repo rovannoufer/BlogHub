@@ -16,7 +16,7 @@ const BlogEditor = () =>{
     useEffect(() =>{
         setTextEditor(new EditorJS({
             holderId: "textEditor",
-            data: '',
+            data: content,
             placeholder: "Let's Write",
             tools: tools
         }))
@@ -118,7 +118,7 @@ const handlePublishEvent = () =>{
                   </label>
                 </div>
 
-                <textarea placeholder="BlogTitle" 
+                <textarea placeholder="BlogTitle" defaultValue={title}
                 className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10
                 leading-tight placeholder:opacity-40  "
                 onKeyDown={handleTitleKeyDown}
