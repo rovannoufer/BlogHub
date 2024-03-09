@@ -1,0 +1,23 @@
+import axios from "axios";
+
+
+export const uploadImage = async(img) =>{
+
+    let imageUrl = null;
+    
+    const serverUrl = "http://localhost:3000";
+    await axios.get(serverUrl + "/get-upload-url")
+    .then( async({ data: { uploadURL }}) =>{
+
+        await axios({
+            method: 'PUT',
+            url: uploadURL,
+            headers: {'Content-Type': 'multipart/form-data'},
+            data:img
+        }).then(()=>{
+            imageUrl = uploadURL.split("?")[0];
+        })
+    })
+
+    return imageUrl
+}

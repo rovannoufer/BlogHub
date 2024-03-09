@@ -1,17 +1,40 @@
-import { useContext, useState } from "react";
+import { useContext, useState, createContext } from "react";
 import { UserContext } from "../App";
 import { Navigate } from "react-router-dom";
 import BlogEditor from "../components/blogeditor";
+import PublishForm from "../components/publishform";
+
+
+const blogStructure = {
+    title: '',
+    banner:'',
+    content: [],
+    tags: [],
+    des: '',
+    author: { personal_info : { } }
+  }
+
+export const EditorContext = createContext({ });
 
 const Editor = () =>{
     
-    const [ editorState, setEditorState ] = useState("editor");
+   const  [ blog, setBlog ] = useState(blogStructure); 
+  
+   const [ editorState, setEditorState ] = useState("editor");
 
     let { userAuth: { access_token, username }} = useContext(UserContext);
     
     return(
-        access_token === null ? <Navigate to='/signin'/>
-        : editorState == "editor" ? <BlogEditor /> : <h1> Publish {username }</h1>
+        <EditorContext.Provider value={{ blog, setBlog, editorState, setEditorState }}>
+        
+        {
+            access_token === null ? <Navigate to='/signin'/>
+            : editorState == "editor" ? <BlogEditor /> : <PublishForm />
+        }
+
+        </EditorContext.Provider>
+        
+        
     )
 }
 
