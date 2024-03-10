@@ -4,6 +4,7 @@ import UserAuth from "./pages/userAuth.jsx";
 import { createContext,useEffect, useState } from "react";
 import { lookInSession } from "./common/session.jsx"
 import Editor from "./pages/editor.jsx";
+import HomePage from "./pages/homepage.jsx";
 
 export const UserContext = createContext({})
 
@@ -26,8 +27,9 @@ function App() {
     <Routes>
       <Route path='/editor' element={<Editor/>}/>
       <Route path='/' element={ <Navbar/> }>
-      <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
-      <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
+        <Route index element={<HomePage />} />
+        <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
+        <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
       </Route>
     </Routes>
     </BrowserRouter>
