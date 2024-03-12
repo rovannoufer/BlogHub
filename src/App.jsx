@@ -6,6 +6,7 @@ import { lookInSession } from "./common/session.jsx"
 import Editor from "./pages/editor.jsx";
 import HomePage from "./pages/homepage.jsx";
 import SearchPage from "./pages/searchpage.jsx";
+import Error404 from "./pages/404error.jsx";
 
 
 export const UserContext = createContext({})
@@ -32,7 +33,9 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
         <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
-        <Route path="search/:query" element={ <SearchPage name ="noufer"/>}/>
+        <Route path="search/:query" element={ <SearchPage />}/>
+        <Route path="*" element={<Error404/>} />
+
       </Route>
     </Routes>
     </BrowserRouter>
