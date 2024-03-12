@@ -8,6 +8,7 @@ import HomePage from "./pages/homepage.jsx";
 import SearchPage from "./pages/searchpage.jsx";
 import Error404 from "./pages/404error.jsx";
 import ProfilePage from "./pages/profilepage.jsx";
+import BlogPage from "./pages/blogpage.jsx";
 
 export const UserContext = createContext({})
 
@@ -35,6 +36,7 @@ function App() {
         <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
         <Route path="search/:query" element={ <SearchPage />}/>
         <Route path="*" element={<Error404/>} />
+        <Route path="blog/:blog_id" element = {<BlogPage />}/>
         <Route path="user/:id" element={<ProfilePage />}/>
 
       </Route>
