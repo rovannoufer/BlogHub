@@ -7,6 +7,7 @@ import Trendingpostcard from "../components/trendingpostcard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire } from "@fortawesome/free-solid-svg-icons";
 import { activeTabLineRef, activeTabRef } from "../components/inpagenavigation";
+import NoDaTaMessage from "../components/nodata";
 const HomePage = () =>{
  
     let [ blogs, setBlog ] = useState(null);
@@ -86,18 +87,22 @@ const HomePage = () =>{
           {
             blogs == null ? 
             <Loader /> 
-            : blogs.map((blog,i) =>{
-                return <h1 key={i}> <BlogPostCard content={blog} author={blog.author.personal_info}/> </h1>
-            }) 
+            : (
+                blogs.length ? blogs.map((blog,i) =>{
+                    return <h1 key={i}> <BlogPostCard content={blog} author={blog.author.personal_info}/> </h1>
+                }) : <NoDaTaMessage message={ "No Blogs Published" } />
+            )
             
           }
           </>
 
            {
              trendingBlogs == null ? <Loader /> 
-             : trendingBlogs.map((blog,i) =>{
-                 return <h1 key={i}> <Trendingpostcard blog={ blog } index={i} /> </h1>
-             }) 
+             : (
+                trendingBlogs ? trendingBlogs.map((blog,i) =>{
+                    return <h1 key={i}> <Trendingpostcard blog={ blog } index={i} /> </h1>
+                }) : <NoDaTaMessage message={ "No Trending Blogs Published" } />
+             )
            }
 
            </InPageNavigation>
@@ -125,9 +130,11 @@ const HomePage = () =>{
                  <h1 className="font-medium text-xl mb-8"> Trending <FontAwesomeIcon icon={faFire}/> </h1>
                 {
                     trendingBlogs == null ? <Loader /> 
-                    : trendingBlogs.map((blog,i) =>{
-                        return <h1 key={i}> <Trendingpostcard blog={ blog } index={i} /> </h1>
-                    }) 
+                    : (
+                       trendingBlogs ? trendingBlogs.map((blog,i) =>{
+                           return <h1 key={i}> <Trendingpostcard blog={ blog } index={i} /> </h1>
+                       }) : <NoDaTaMessage message={ "No Trending Blogs Published" } />
+                    ) 
                 }
                 </div>
 
