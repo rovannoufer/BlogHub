@@ -13,7 +13,7 @@ const HomePage = () =>{
     let [ trendingBlogs, setTrendingBlogs ] = useState(null);
     let [ pageState, setPageState ] = useState("home");
 
-    let categories = ["programming", "machine learning", "Social media", "Web technology"]
+    let categories = ["Programming", "Machine learning", "Social media", "Web technology", "Neuralnetwoks"]
 
     const serverUrl = "http://localhost:3000" ;
 
@@ -48,6 +48,15 @@ const HomePage = () =>{
       setPageState(category);
 
      }
+
+     const fetchBlogsByCategory = (e) =>{
+        axios.post(serverUrl + "/search-blogs", { tag: pageState })
+        .then(({ data }) =>{
+            setBlog(data.blogs);
+        }).catch((err) =>{
+            console.log(err);
+        })
+     }
     
 
     useEffect(() =>{
@@ -55,6 +64,8 @@ const HomePage = () =>{
 
         if(pageState == "home"){
             fetchLatestBlogs();
+        }else{
+            fetchBlogsByCategory();
         }
         if(!trendingBlogs){
             fetchTrendingBlogs();
