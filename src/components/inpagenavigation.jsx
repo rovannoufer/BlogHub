@@ -13,7 +13,7 @@ const InPageNavigation = ({ routes, defaultActiveIndex = 0, defaultHidden, child
 
     const changePageState = (btn, i) => {
         const { offsetWidth, offsetLeft } = btn;
-        console.log(offsetWidth);
+        
       
         activeTabLineRef.current.style.width = `${ offsetWidth}px`;
         activeTabLineRef.current.style.left = `${ offsetLeft}px`;
@@ -43,7 +43,7 @@ const InPageNavigation = ({ routes, defaultActiveIndex = 0, defaultHidden, child
             })
            }
 
-           <hr ref={ activeTabLineRef } className= " absolute bottom-0 duration-300 " ></hr>
+           <hr ref={ activeTabLineRef } className= " relative bottom-0 hidden " ></hr>
         </div>
 
          { Array.isArray(children) ? children[inPageNavIndex] : children }

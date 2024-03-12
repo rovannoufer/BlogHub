@@ -8,6 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire } from "@fortawesome/free-solid-svg-icons";
 import { activeTabLineRef, activeTabRef } from "../components/inpagenavigation";
 import NoDaTaMessage from "../components/nodata";
+import filterPaginationData from "../common/filter-pagination";
+import LoadMoreDataButton from "../components/loadmoredatabutton";
+
+
 const HomePage = () =>{
  
     let [ blogs, setBlog ] = useState(null);
@@ -18,10 +22,20 @@ const HomePage = () =>{
 
     const serverUrl = "http://localhost:3000" ;
 
-    const fetchLatestBlogs = () =>{
-       axios.get(serverUrl + "/latest-blogs")
-       .then(({ data }) =>{
-        setBlog(data.blogs)
+    const fetchLatestBlogs =  ( { page = 1} ) =>{
+        axios.post(serverUrl + "/latest-blogs", { page })
+       .then( async ({ data }) =>{
+
+        
+        let formatedData = await filterPaginationData({
+            state: blogs,
+            data:data.blogs,
+            page,
+            countRoute:"/latestblogs-count"
+        })
+        // blog is now in object not in array
+     
+        setBlog(formatedData);
        }).catch(err =>{
         console.log(err);
        })
@@ -50,11 +64,19 @@ const HomePage = () =>{
 
      }
 
-     const fetchBlogsByCategory = (e) =>{
-        axios.post(serverUrl + "/search-blogs", { tag: pageState })
-        .then(({ data }) =>{
-            setBlog(data.blogs);
-        }).catch((err) =>{
+     const fetchBlogsByCategory = ({ page = 1 }) =>{
+        axios.post(serverUrl + "/search-blogs", { tag: pageState, page })
+        .then( async ({ data }) =>{
+            let formatedData = await filterPaginationData({
+                state: blogs,
+                data:data.blogs,
+                page,
+                countRoute:"/search-blogs-count",
+                data_to_send: { tag: pageState}
+            })
+            // blog is now in object not in array
+            setBlog(formatedData);
+           }).catch((err) =>{
             console.log(err);
         })
      }
@@ -64,9 +86,9 @@ const HomePage = () =>{
         activeTabRef.current.click();
 
         if(pageState == "home"){
-            fetchLatestBlogs();
+            fetchLatestBlogs({ page:1 });
         }else{
-            fetchBlogsByCategory();
+            fetchBlogsByCategory({ page: 1 });
         }
         if(!trendingBlogs){
             fetchTrendingBlogs();
@@ -88,12 +110,12 @@ const HomePage = () =>{
             blogs == null ? 
             <Loader /> 
             : (
-                blogs.length ? blogs.map((blog,i) =>{
+                blogs.results.length ? blogs.results.map((blog,i) =>{
                     return <h1 key={i}> <BlogPostCard content={blog} author={blog.author.personal_info}/> </h1>
                 }) : <NoDaTaMessage message={ "No Blogs Published" } />
-            )
-            
-          }
+            )}
+
+            <LoadMoreDataButton state={ blogs } fetchDataFun={( pageState == "home" ? fetchLatestBlogs : fetchBlogsByCategory )}/>
           </>
 
            {
