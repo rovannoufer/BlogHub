@@ -1,18 +1,22 @@
 import { useParams,  } from "react-router-dom";
-import InPageNavigation from "./components/inpagenavigation";
-import LoadMoreDataButton from "./components/loadmoredatabutton";
-import BlogPostCard from "./components/blogpostcard";
-import Loader from "./components/loader";
-import NoDaTaMessage from "./components/nodata";
+import InPageNavigation from "../components/inpagenavigation";
+import LoadMoreDataButton from "../components/loadmoredatabutton";
+import BlogPostCard from "../components/blogpostcard";
+import Loader from "../components/loader";
+import NoDaTaMessage from "../components/nodata";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import filterPaginationData from "./common/filter-pagination";
+import filterPaginationData from "../common/filter-pagination";
+import UserCard from "../components/usercard";
+
 
 
 const SearchPage = (props) =>{
   
     let { query } =useParams();
     let [blogs, setBlogs ] = useState(null);
+    let[ users, setUsers ] = useState(null);
+
     const serverUrl = "http://localhost:3000" ;
 
 
@@ -39,10 +43,41 @@ const SearchPage = (props) =>{
 
     }
 
+    const fetchuser = () =>{
+        axios.post(serverUrl+"/search-user", { query })
+        .then(({ data:{ users }}) =>{
+            console.log(users)
+            setUsers(users);
+        })
+    }
+
     useEffect(()=>{
         searchBlogs({ page : 1, create_new_arr : true });
+        fetchuser();
+
     },[query])
-  
+
+    
+const Usercard = () =>{
+        return(
+            <>
+            {
+                users == null ? <Loader /> : 
+                users.length ? 
+                users.map((user,i)=>{
+                         return <>
+                            <div key={i}>
+                               <UserCard user = { user }/>
+                            </div>
+                           </>;
+                }) : <NoDaTaMessage message ={ "No users found" }/>
+            }
+            
+            </>
+        )
+    }
+
+
     return(
     <section className="h-cover flex justify-center gap-10"> 
 
@@ -61,8 +96,15 @@ const SearchPage = (props) =>{
 
                         <LoadMoreDataButton state={ blogs } fetchDataFun={searchBlogs}/>
                   </>
+
+                  <Usercard />
              </InPageNavigation>
         </div> 
+
+        <div className="min-w-[40%] lg:min-w-[350px] max-w-min border-l border-grey pl-8 pt-3 max-md:hidden">
+           <h1 className="font-medium text-xl mb-8"> User related to search </h1>
+           <Usercard />
+        </div>
 
     </section>
   )

@@ -5,7 +5,8 @@ import { createContext,useEffect, useState } from "react";
 import { lookInSession } from "./common/session.jsx"
 import Editor from "./pages/editor.jsx";
 import HomePage from "./pages/homepage.jsx";
-import SearchPage from "./searchpage.jsx";
+import SearchPage from "./pages/searchpage.jsx";
+
 
 export const UserContext = createContext({})
 
