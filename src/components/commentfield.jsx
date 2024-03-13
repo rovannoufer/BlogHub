@@ -6,7 +6,7 @@ import { BlogContext } from "../pages/blogpage";
 
 
 const CommentField = ({ action , index = undefined, replyingTo= undefined,
-     setIsReplying} ) =>{
+     setReplying} ) =>{
 
    
 
@@ -47,30 +47,30 @@ const CommentField = ({ action , index = undefined, replyingTo= undefined,
 
             let newCommentArr;
 
-            // if(replyingTo){
+            if(replyingTo){
 
-            //     commentsArr[index].children.push(data._id);
+                commentsArr[index].children.push(data._id);
 
-            //     data.childrenLevel = commentsArr[index].childrenLevel + 1;
-            //     data.parentIndex =  index;
+                data.childrenLevel = commentsArr[index].childrenLevel + 1;
+                data.parentIndex =  index;
 
-            //     commentsArr[index].isReplyLoaded = true;
-            //     commentsArr.splice(index + 1, 0, data);
+                commentsArr[index].isReplyLoaded = true;
+                commentsArr.splice(index + 1, 0, data);
 
-            //     newCommentArr = commentsArr;
-            //     setIsReplying(false);
+                newCommentArr = commentsArr;
+                setReplying(false);
 
 
-            // }else{
-               
-            // }
-
-            data.childrenLevel = 0;
-            newCommentArr = [ data, ...commentsArr ];
+            }else{
+                data.childrenLevel = 0;
+                newCommentArr = [ data, ...commentsArr ];
+    
+            }
 
             
+            
 
-            let parentCommentIncrementvalue =  1;
+            let parentCommentIncrementvalue =  replyingTo ? 0 : 1;
             setBlog({ ...blog, comments: { ...comments, results: newCommentArr },
                 activity: { ...activity, total_comments: total_comments+ 1 , 
                 total_parent_comments : total_parent_comments + parentCommentIncrementvalue } })

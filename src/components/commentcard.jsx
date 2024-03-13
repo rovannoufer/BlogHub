@@ -17,11 +17,22 @@ const CommentCard = ({ index, leftVal, commentData }) => {
 
     let { userAuth: { access_token } } = useContext(UserContext);
 
-    const [ isReplying, setIsReplying ] = useState(false);
+    const [ isReplying, setReplying ] = useState(false);
     let { blog, setBlog, blog: { comments, comments: { results: commentsArr }}} = useContext(BlogContext);
 
 
     const serverUrl = "http://localhost:3000" ;
+
+    const handleReplyClick = () =>{
+
+        if(!access_token){
+           return toast.error("Need to be login")
+        }
+
+        setReplying(preVal => !preVal)
+        
+        
+    }
 
    
 
@@ -42,38 +53,20 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                   <p className="text-xl ml-3"> { comment } </p>
 
                  <div className="flex gap-5 items-center mt-5">
-                    {/* {
-                     commentData.isReplyLoaded ? 
-                     <button 
-                    //  onClick={ hideReplies }
-                     className="text-dark-grey p-2 px-3 
-                     hover:bg-grey/30
-                     rounded-md flex items-center gap-2"> 
-                        <FontAwesomeIcon icon={faComment} /> Hide reply
-                     </button> : 
-                    //  : <button  
-                    // //   onClick={loadReplies}
-                    //  className="text-dark-grey p-2 px-3 
-                    //  hover:bg-grey/30
-                    //  rounded-md flex items-center gap-2">
-                    //     <FontAwesomeIcon icon={faComment} /> {children.length} Load Replies
-                    //  </button>
-                    ""
-
-                    } */}
-                    {/* <button 
-                    // onClick={handleReply}
-                    className="underline"> Reply </button> */}
+                   
+                    <button 
+                    onClick={handleReplyClick}
+                    className="underline"> Reply </button>
 
                  </div>
 
-                 {/* {
+                 {
                     isReplying ? 
                     <div className="mt-8">
                         <CommentField action ="reply" 
-                        index={index} replyingTo={_id} setIsReplying={setIsReplying} />
+                        index={index} replyingTo={_id} setReplying={setReplying} />
                     </div> : ""
-                 } */}
+                 }
               </div>
         </div>
         </>
