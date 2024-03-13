@@ -3,6 +3,33 @@ import { BlogContext } from "../pages/blogpage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import CommentField from "./commentfield";
+import axios from "axios";
+
+
+
+export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFun, comment_array = null }) => {
+    try {
+        const serverUrl = "http://localhost:3000";
+        const response = await axios.post(serverUrl + "/get-blog-comments", { blog_id, skip });
+
+        const data = response.data.map(comment => {
+            comment.childrenLevel = 0;
+            return comment;
+        });
+
+        setParentCommentCountFun(preVal => preVal + data.length);
+
+        if (comment_array == null) {
+            return { results: data };
+        } else {
+            return { results: [...comment_array, ...data] };
+        }
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        return { error: error.message };
+    }
+};
+
 
 const  CommentContainer = () =>{
 

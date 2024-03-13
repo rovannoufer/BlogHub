@@ -6,7 +6,7 @@ import getDay from "../common/date";
 import BlogInteraction from "../components/bloginteraction";
 import BlogPostCard from "../components/blogpostcard";
 import BlogContent from "../components/blogcontent";
-import CommentContainer from "../components/commentcontainer";
+import CommentContainer, { fetchComments } from "../components/commentcontainer";
 
 
 export const blogstruc = {
@@ -37,15 +37,19 @@ const BlogPage = () =>{
     const serverUrl = "http://localhost:3000" ;
     const fetchBlog= () =>{
         axios.post(serverUrl +"/get-blog", { blog_id })
-        .then(({ data : { blog } }) => {
+        .then(async ({ data : { blog } }) => {
 
-
+            
+            blog.comments = await fetchComments({ blog_id : blog._id, setParentCommentCountFun: setTotalParentComments})
             setBlog(blog);
+            console.log(blog)
 
+
+            // similarblogs
             axios.post(serverUrl+"/search-blogs", { tag: blog.tags[0], limit:6, eliminate_blog: blog_id })
             .then(({ data }) =>{
                 setSimilarBlogs(data.blogs);
-                console.log(data.blogs);
+                
             })
            
             setLoading(false);
@@ -104,7 +108,7 @@ const BlogPage = () =>{
 
                                         {
                                             content[0].blocks.map((block,i) =>{
-                                                console.log(block)
+                                                
                                                  return <div key={i} className="my-4 md:my-8">
                                                     
                                                     <BlogContent block = { block }/>
@@ -126,8 +130,7 @@ const BlogPage = () =>{
                                   {
                                     similarBlogs.map((blog,i) =>{
                                         let { author : { personal_info } } = blog;
-                                        console.log(blog)
-
+                                        
                                         return <h1 key={i}>
                                               <BlogPostCard content={ blog } author = { personal_info }/>
                                         </h1>

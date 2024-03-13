@@ -44,6 +44,7 @@ const CommentField = ({ action }) =>{
             let newCommentArr;
 
             data.childrenLevel = 0;
+            
             newCommentArr = [ data ];
             let parentCommentIncrementvalue = 1;
             setBlog({ ...blog, comment: { ...comments, results: newCommentArr },activity: { ...activity, total_comments: total_comments+ 1 , 
