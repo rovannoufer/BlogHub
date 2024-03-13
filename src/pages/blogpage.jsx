@@ -5,6 +5,7 @@ import Loader from "../components/loader";
 import getDay from "../common/date";
 import BlogInteraction from "../components/bloginteraction";
 import BlogPostCard from "../components/blogpostcard";
+import BlogContent from "../components/blogcontent";
 
 
 export const blogstruc = {
@@ -89,7 +90,20 @@ const BlogPage = () =>{
                                 </div>
 
                                 <BlogInteraction />
+                                    
+                                    <div className="my-12 blog-page-content">
 
+                                        {
+                                            content[0].blocks.map((block,i) =>{
+                                                console.log(block)
+                                                 return <div key={i} className="my-4 md:my-8">
+                                                    
+                                                    <BlogContent block = { block }/>
+                                                    </div>
+                                            })
+                                        }
+
+                                    </div>
 
                                 <BlogInteraction />
 
