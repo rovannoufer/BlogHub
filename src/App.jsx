@@ -30,14 +30,16 @@ function App() {
       <BrowserRouter>
     <Routes>
       <Route path='/editor' element={<Editor/>}/>
+      <Route path='/editor/:blog_id' element={<Editor/>}/>
       <Route path='/' element={ <Navbar/> }>
         <Route index element={<HomePage />} />
         <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
         <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
         <Route path="search/:query" element={ <SearchPage />}/>
-        <Route path="*" element={<Error404/>} />
+       
         <Route path="blog/:blog_id" element = {<BlogPage />}/>
         <Route path="user/:id" element={<ProfilePage />}/>
+        <Route path="*" element={<Error404/>} />
 
       </Route>
     </Routes>
