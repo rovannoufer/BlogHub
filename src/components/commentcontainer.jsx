@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import CommentField from "./commentfield";
 import axios from "axios";
+import NoDaTaMessage from "./nodata";
+import CommentCard from "./commentcard";
 
 
 
@@ -34,7 +36,7 @@ export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFu
 const  CommentContainer = () =>{
 
 
-    let { blog: { title }, commentsWrapper, setCommentsWrapper } = useContext(BlogContext);
+    let { blog: { title , comments: { results: commentsArr } }, commentsWrapper, setCommentsWrapper } = useContext(BlogContext);
 
     return(
      <>
@@ -56,6 +58,15 @@ const  CommentContainer = () =>{
 
              <hr className="border-grwy my-8 w-[120%] -ml-10"/>
              <CommentField  action={ "comment" }/>
+
+             {
+                  commentsArr && commentsArr.length ?
+                  commentsArr.map((comment,i) =>{
+                    return <div key={i}>
+                         <CommentCard index={i} leftVal={ i.childrenLevel *4 } commentData = {comment}/>
+                        </div>
+                  }) : <NoDaTaMessage message="No Comments" />
+             }
              
             </div>
      </>
