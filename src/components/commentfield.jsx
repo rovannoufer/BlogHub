@@ -5,11 +5,14 @@ import axios from "axios";
 import { BlogContext } from "../pages/blogpage";
 
 
-const CommentField = ({ action }) =>{
+const CommentField = ({ action , index = undefined, replyingTo= undefined,
+     setIsReplying} ) =>{
 
    
 
-    let { blog, setBlog, blog: { _id, author: { _id: blog_author}, comments, comments : { results: commentsArr } , activity, activity: { total_comments, total_parent_comments} } 
+    let { blog, setBlog, blog: { _id, author: { _id: blog_author}, comments, 
+    comments : { results: commentsArr } , activity, 
+    activity: { total_comments, total_parent_comments} } 
          , setTotalParentComments,
           } = useContext(BlogContext)
 
@@ -28,13 +31,14 @@ const CommentField = ({ action }) =>{
          }
 
          axios.post(serverUrl+ "/add-comment", {
-            _id, blog_author, comment
+            _id, blog_author, comment, replying_to: replyingTo
          }, {
             headers:{
                 'Authorization': `Bearer ${access_token}`
             }
          }).then(( { data }) =>{
              
+            
             setComment("");
 
             data.commented_by = { personal_info : {
@@ -43,13 +47,33 @@ const CommentField = ({ action }) =>{
 
             let newCommentArr;
 
+            // if(replyingTo){
+
+            //     commentsArr[index].children.push(data._id);
+
+            //     data.childrenLevel = commentsArr[index].childrenLevel + 1;
+            //     data.parentIndex =  index;
+
+            //     commentsArr[index].isReplyLoaded = true;
+            //     commentsArr.splice(index + 1, 0, data);
+
+            //     newCommentArr = commentsArr;
+            //     setIsReplying(false);
+
+
+            // }else{
+               
+            // }
+
             data.childrenLevel = 0;
+            newCommentArr = [ data, ...commentsArr ];
 
-            newCommentArr = [ data, ...commentsArr  ];
+            
 
-            let parentCommentIncrementvalue = 1;
-            setBlog({ ...blog, comment: { ...comments, results: newCommentArr },activity: { ...activity, total_comments: total_comments+ 1 , 
-                total_parent_comments : parentCommentIncrementvalue + total_parent_comments } })
+            let parentCommentIncrementvalue =  1;
+            setBlog({ ...blog, comments: { ...comments, results: newCommentArr },
+                activity: { ...activity, total_comments: total_comments+ 1 , 
+                total_parent_comments : total_parent_comments + parentCommentIncrementvalue } })
 
             setTotalParentComments(preval => preval+parentCommentIncrementvalue)
 

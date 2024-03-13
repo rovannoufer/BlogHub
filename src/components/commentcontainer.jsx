@@ -9,7 +9,8 @@ import CommentCard from "./commentcard";
 
 
 
-export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFun, comment_array = null }) => {
+export const fetchComments = async ({ skip = 0, blog_id, 
+    setParentCommentCountFun, comment_array = null }) => {
     try {
         const serverUrl = "http://localhost:3000";
         const response = await axios.post(serverUrl + "/get-blog-comments", { blog_id, skip });
@@ -36,14 +37,22 @@ export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFu
 const  CommentContainer = () =>{
 
 
-    let { blog, setBlog, blog: { _id, title , comments: { results: commentsArr } , activity: { total_parent_comments }}, 
+    let { blog, setBlog, 
+        blog: { _id, title , comments: { results: commentsArr } ,
+         activity: { total_parent_comments }}, 
     commentsWrapper, setCommentsWrapper, totalParentComments, setTotalParentComments } = useContext(BlogContext);
 
-    const loadMore = async () =>{
-           let newCommentsArr = await fetchComments({ skip : totalParentComments, blog_id: _id,
-             setParentCommentCountFun:setTotalParentComments, comment_array: commentsArr })
+    console.log(commentsArr);
 
-           setBlog({ ...blog , comments: newCommentsArr})
+    const loadMoreComments = async() =>{
+
+        let newCommentsArr = await fetchComments({
+            skip: totalParentComments, blog_id : _id,
+            setParentCommentCountFun: setTotalParentComments,
+            comment_array: commentsArr
+        })
+
+        setBlog({ ...blog, comments: newCommentsArr})
     }
 
     return(
@@ -65,27 +74,27 @@ const  CommentContainer = () =>{
              </div>
 
              <hr className="border-grwy my-8 w-[120%] -ml-10"/>
-             <CommentField  action={ "comment" }/>
+             <CommentField  action="comment" />
 
              {
                   commentsArr && commentsArr.length ?
                   commentsArr.map((comment,i) =>{
                     return <div key={i}>
-                         <CommentCard index={i} leftVal={ i.childrenLevel *4 } commentData = {comment}/>
+                         <CommentCard index={i} leftVal={ comment.childrenLevel * 4 } commentData = {comment}/>
                         </div>
                   }) : <NoDaTaMessage message="No Comments" />
              }
 
              {
-               total_parent_comments > totalParentComments ? 
-
-               <button 
-               onClick={loadMore}
-               className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center">
-                   Load more
-               </button> : " "
-
+                total_parent_comments > totalParentComments ?
+                <button 
+                onClick={ loadMoreComments }
+                className="text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2">
+                    Load more
+                </button> : " "
              }
+
+            
              
             </div>
      </>
