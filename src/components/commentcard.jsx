@@ -34,6 +34,49 @@ const CommentCard = ({ index, leftVal, commentData }) => {
         
     }
 
+    const loadReplies = ({ skip = 0}) =>{
+        if(children.length){
+            hideReplies();
+
+            axios.post(serverUrl + "/get-replies", {
+                _id, skip
+            }).then(({ data : { replies }}) =>{
+
+                commentData.isReplyLoaded = true;
+
+                for(let i=0;i<replies.length;i++){
+                    replies[i].childrenLevel = commentData.childrenLevel + 1;
+                    commentsArr.splice(index + 1 + i + skip, 0, replies[i]);
+                }
+
+                setBlog({ ...blog, comments: { ...comments, results: commentsArr }})
+            }).catch(error =>{
+                console.log(error);
+            })
+        }
+    }
+
+    const removeCommentsCards = (startingPoint) =>{
+
+        if(commentsArr[startingPoint]){
+            while(commentsArr[startingPoint].childrenLevel > commentData.childrenLevel){
+                commentsArr.splice(startingPoint, 1)
+
+                if(!commentsArr[startingPoint]){
+                    break;
+                }
+            }
+        }
+
+        setBlog({ ...blog, comments: { results: commentsArr} })
+    }
+
+    const hideReplies = () =>{
+
+        commentData.isReplyLoaded = false;
+        removeCommentsCards(index + 1 )
+    }
+
    
 
 
@@ -53,7 +96,22 @@ const CommentCard = ({ index, leftVal, commentData }) => {
                   <p className="text-xl ml-3"> { comment } </p>
 
                  <div className="flex gap-5 items-center mt-5">
-                   
+                   {
+                     commentData.isReplyLoaded ? 
+                     <button 
+                     onClick={ hideReplies }
+                     className="text-dark-grey p-2 px-3
+                     hover:bg-grey/30 rounded-md flex items-center gap-2
+                     ">
+                        <FontAwesomeIcon icon={ faComment }/> Hide Reply
+                     </button> : 
+                     <button onClick={ loadReplies }
+                     className="text-dark-grey p-2 px-3
+                     hover:bg-grey/30 rounded-md flex items-center gap-2
+                     ">
+                       <FontAwesomeIcon icon={ faComment }/>{ children.length } Replies
+                     </button>
+                   }
                     <button 
                     onClick={handleReplyClick}
                     className="underline"> Reply </button>
