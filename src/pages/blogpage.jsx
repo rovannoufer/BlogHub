@@ -6,6 +6,7 @@ import getDay from "../common/date";
 import BlogInteraction from "../components/bloginteraction";
 import BlogPostCard from "../components/blogpostcard";
 import BlogContent from "../components/blogcontent";
+import CommentContainer from "../components/commentcontainer";
 
 
 export const blogstruc = {
@@ -27,6 +28,9 @@ const BlogPage = () =>{
     const [ loading, setLoading ] = useState(true);
     const [ similarBlogs, setSimilarBlogs ] = useState(null);
     const [ isLikebyUser, setIsLikebyUser ] = useState(false);
+
+    const[ commentsWrapper, setCommentsWrapper ] = useState(false); 
+    const [ totalParentComments, setTotalParentComments ] = useState(0);
 
     let { title, content, banner, author: {personal_info:{ fullname, username: author_username , profile_img }}, publishedAt} = blog;
 
@@ -55,6 +59,9 @@ const BlogPage = () =>{
         setBlog(blogstruc);
         setSimilarBlogs(null);
         setLoading(true);
+        setIsLikebyUser(false);
+        setCommentsWrapper(false);
+        setTotalParentComments(0);
     }  
 
     useEffect(() =>{ 
@@ -70,8 +77,9 @@ const BlogPage = () =>{
         <>
         {
             loading ? <Loader /> :
-            <BlogContext.Provider value={{ blog, setBlog ,isLikebyUser, setIsLikebyUser }}>
+            <BlogContext.Provider value={{ blog, setBlog ,isLikebyUser, setIsLikebyUser, totalParentComments, setTotalParentComments, commentsWrapper, setCommentsWrapper }}>
 
+                    <CommentContainer />
                     <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
                                 
                                 <img src={banner} className="aspect-video" />
