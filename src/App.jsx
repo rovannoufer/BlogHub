@@ -10,6 +10,7 @@ import Error404 from "./pages/404error.jsx";
 import ProfilePage from "./pages/profilepage.jsx";
 import BlogPage from "./pages/blogpage.jsx";
 import SideNavbar from "./components/sidenavbar.jsx";
+import ChangePassword from "./pages/changepassword.jsx";
 
 export const UserContext = createContext({})
 
@@ -36,7 +37,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="settings" element= {<SideNavbar />}>
               <Route path="edit-profile" element={ <h1>Edit profile </h1>}/>
-              <Route path="change-password" element={ <h1>Change-password </h1>}/>
+              <Route path="change-password" element={ <ChangePassword />}/>
         </Route>
         <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
         <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
