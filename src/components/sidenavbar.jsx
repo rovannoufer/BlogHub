@@ -10,7 +10,7 @@ const SideNavbar = () =>{
 
     let page = location.pathname.split("/")[2];
     let [ pageState, setPageState ] = useState(page.replace('-',' '));
-    let [ showSideNav, setShowSideNav ] = useState();
+    let [ showSideNav, setShowSideNav ] = useState(false);
     
 
     let activeTabLine = useRef();
@@ -36,7 +36,7 @@ const SideNavbar = () =>{
     useEffect(() =>{
 
         setShowSideNav(false);
-        pageStateTab.current.click();
+        
     }, [pageState])
 
     return(
