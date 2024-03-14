@@ -9,6 +9,7 @@ import SearchPage from "./pages/searchpage.jsx";
 import Error404 from "./pages/404error.jsx";
 import ProfilePage from "./pages/profilepage.jsx";
 import BlogPage from "./pages/blogpage.jsx";
+import SideNavbar from "./components/sidenavbar.jsx";
 
 export const UserContext = createContext({})
 
@@ -33,6 +34,10 @@ function App() {
       <Route path='/editor/:blog_id' element={<Editor/>}/>
       <Route path='/' element={ <Navbar/> }>
         <Route index element={<HomePage />} />
+        <Route path="settings" element= {<SideNavbar />}>
+              <Route path="edit-profile" element={ <h1>Edit profile </h1>}/>
+              <Route path="change-password" element={ <h1>Change-password </h1>}/>
+        </Route>
         <Route path='signin' element={ <UserAuth type = "sign-in"/>  }/>
         <Route path='signup' element={ <UserAuth type = "sign-up"/> }/>
         <Route path="search/:query" element={ <SearchPage />}/>
