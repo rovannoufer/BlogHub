@@ -4,7 +4,7 @@ import { faEye, faEyeSlash, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 
-const InputBox = ({name, type, id, value, placeholder, icon}) => {
+const InputBox = ({name, type, id, value, placeholder, icon, disable= false}) => {
 
 
     const [password, setpassword] = useState(false);
@@ -17,6 +17,7 @@ const InputBox = ({name, type, id, value, placeholder, icon}) => {
              type={type == "password" ? password ? "text" : "password" : type}
              placeholder={placeholder}
              defaultValue={value}
+             disabled = {disable}
              id={id}
              className="input-box"
            />
