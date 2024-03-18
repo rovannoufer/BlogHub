@@ -54,6 +54,8 @@ const EditProfile =  () => {
         setUpdatedProfileImage(img);
 
     }
+
+    
     const handleImageUpload = (e) =>{
         e.preventDefault();
 

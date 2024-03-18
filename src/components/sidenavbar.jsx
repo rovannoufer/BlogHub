@@ -6,7 +6,7 @@ import { faBars, faBell, faChain, faFile, faFilePen,faLock,faUser } from "@forta
 
 const SideNavbar = () =>{
 
-    let { userAuth: { access_token }} = useContext(UserContext);
+    let { userAuth: { access_token, new_notification_available }} = useContext(UserContext);
 
     let page = location.pathname.split("/")[2];
     let [ pageState, setPageState ] = useState(page.replace('-',' '));
@@ -73,12 +73,19 @@ const SideNavbar = () =>{
                     </NavLink>
 
                     <NavLink to="/dashboard/notification"  onClick={(e) => setPageState(e.target.innerText)} className="sidebar-link">
-                        <FontAwesomeIcon icon={ faBell }/>
+                        
+                        <div className="relative">
+                            <FontAwesomeIcon icon={ faBell }/>
+                            {
+                                new_notification_available ? <span className="bg-red w-2 h-2 rounded-full absolute z-10 top-0 right-0"> </span> : " "
+                            }
+                        </div>
                       Notification     
                     </NavLink>
 
                     <NavLink to={"/editor"}  onClick={(e) => setPageState(e.target.innerText)} className="sidebar-link">
                         <FontAwesomeIcon icon={ faFilePen }/>
+                       
                       Write     
                     </NavLink>
 

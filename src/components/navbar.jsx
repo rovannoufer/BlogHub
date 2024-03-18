@@ -3,9 +3,10 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faFilePen, faBell } from '@fortawesome/free-solid-svg-icons';
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../App";
 import UserNavigation from "./usernavigation";
+import axios from "axios";
  
 const Navbar = () =>{
 
@@ -14,6 +15,8 @@ const Navbar = () =>{
     const [ userNav , setUserNav ] = useState(false);
 
     let navigate = useNavigate();
+
+    const serverUrl = "http://localhost:3000" ;
 
     const handleuserNav = () =>{
         setUserNav(currentVal => !currentVal);
@@ -30,13 +33,36 @@ const Navbar = () =>{
 
 
 
-    const { userAuth, userAuth: {access_token, profile_img }} = useContext(UserContext)
+    const { userAuth, userAuth: {access_token, profile_img, new_notification_available }, setUserAuth} = useContext(UserContext);
+
+
+
+    useEffect(() =>{
+
+        if(access_token){
+            axios.get(serverUrl+ "/new-notification",{
+                headers:{
+                    'Authorization': `Bearer ${access_token}`
+                }
+            }).then(({ data }) =>{
+               setUserAuth({ ...userAuth, ...data })
+            }).catch(error =>{
+                console.log(error);
+            })
+        }
+
+    },[access_token])
+
+    console.log(new_notification_available)
+
     return (
         <>
         <nav className="navbar ">
            <Link to='/' className="flex-none w-10">
            <img src={logo} className="w-full"/>
            </Link>
+
+           
 
            <div className={"absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show " +
             (search ? "show" : "hide")}>
@@ -66,7 +92,11 @@ const Navbar = () =>{
                     <>
                      <Link to='/dashboard/notification' >
                         <button className="w-12 h-12 rounded-full bg-grey relative hover:bg-black/10">
-                            <FontAwesomeIcon icon={faBell} />
+                            <FontAwesomeIcon icon={faBell} /> 
+                            {
+                              new_notification_available ? <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2"> </span> 
+                              : " "
+                            }
                         </button>                       
                     </Link>
 
