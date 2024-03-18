@@ -4,7 +4,7 @@ export let activeTabLineRef;
 export let activeTabRef;
 
 
-const InPageNavigation = ({ routes, defaultActiveIndex = 0, defaultHidden, children }) =>{
+const InPageNavigation = ({ routes, defaultActiveIndex = 0, defaultHidden =[], children }) =>{
 
     let [ inPageNavIndex, setInPageNavIndex ] = useState(defaultActiveIndex);
 

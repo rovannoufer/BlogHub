@@ -5,6 +5,10 @@ import filterPaginationData from "../common/filter-pagination";
 import { Toaster } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import InPageNavigation from "./inpagenavigation";
+import Loader from "./loader";
+import NoDaTaMessage from "./nodata";
+import { ManageDraftBlogPost, ManagePublishedBlogCard } from "./managepublishcard";
 
 const ManageBlog = () =>{
 
@@ -98,6 +102,44 @@ const ManageBlog = () =>{
             " icon={ faSearch } />
 
           </div>
+
+          <InPageNavigation routes={[ "Published Blogs", "Drafts"]} >
+              
+              {
+                blogs == null ? <Loader /> :
+                blogs.results.length ? 
+
+                <>
+                {
+                    blogs.results.map((blog,i) =>{
+                        return <div key={i}>
+                           <ManagePublishedBlogCard blog={{ ...blog, index:i, setStateFunc: setBlogs}}/>
+                        </div>
+                    })
+                }
+                </>
+                  
+                 
+                : <NoDaTaMessage message={"No published blogs"}/>
+              }
+                    {
+                        drafts == null ? <Loader /> :
+                        drafts.results.length ? 
+
+                        <>
+                        {
+                            drafts.results.map((blog,i) =>{
+                                return <div key={i}>
+                                <ManageDraftBlogPost blog={{ ...blog, index:i+1, setStateFunc: setDrafts}}/>
+                                </div>
+                            })
+                        }
+                        </>
+                        
+                        
+                        : <NoDaTaMessage message={"No Draft blogs"}/>
+                    }
+          </InPageNavigation>
        </>
     )
 }
