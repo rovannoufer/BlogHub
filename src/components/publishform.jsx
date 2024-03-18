@@ -99,7 +99,7 @@ const PublishForm = () =>{
             toast.dismiss(loadingToast);
             toast.success("Published");
             setTimeout(() =>{
-                navigate("/")
+                navigate("/dashboard/blogs")
             }, 500);
         }).catch(( { response } ) =>{
             e.target.classList.remove('disable');

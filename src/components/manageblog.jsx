@@ -9,6 +9,8 @@ import InPageNavigation from "./inpagenavigation";
 import Loader from "./loader";
 import NoDaTaMessage from "./nodata";
 import { ManageDraftBlogPost, ManagePublishedBlogCard } from "./managepublishcard";
+import LoadMoreDataButton from "./loadmoredatabutton";
+import { useSearchParams } from "react-router-dom";
 
 const ManageBlog = () =>{
 
@@ -17,13 +19,16 @@ const ManageBlog = () =>{
     const [ drafts, setDrafts ]= useState(null);
     const [ query, setQuery ] = useState("");
 
+    let activeTab = useSearchParams()[0].get("tab");
+
+
     let { userAuth: { access_token } } = useContext(UserContext);
     const serverUrl = "http://localhost:3000" ;
 
 
-   const getBlogs = ({ page, draft, deleteDocCount = 0}) =>{
+   const getBlogs = ({ page, draft, deletedDocCount = 0}) =>{
     axios.post(serverUrl+"/user-written-blogs",{
-        page, draft, query, deleteDocCount
+        page, draft, query, deletedDocCount
     },{
         headers:{
             'Authorization' : `Bearer ${ access_token }`
@@ -103,7 +108,7 @@ const ManageBlog = () =>{
 
           </div>
 
-          <InPageNavigation routes={[ "Published Blogs", "Drafts"]} >
+          <InPageNavigation routes={[ "Published Blogs", "Drafts"]}  defaultActiveIndex={activeTab != 'draft' ? 0 : 1 }>
               
               {
                 blogs == null ? <Loader /> :
@@ -117,6 +122,7 @@ const ManageBlog = () =>{
                         </div>
                     })
                 }
+                <LoadMoreDataButton state={blogs} fetchDataFun={getBlogs} additionalParam={ { draft: false, deletedDocCount:blogs.deletedDocCount }} />
                 </>
                   
                  
@@ -134,6 +140,7 @@ const ManageBlog = () =>{
                                 </div>
                             })
                         }
+                        <LoadMoreDataButton state={drafts} fetchDataFun={getBlogs} additionalParam={ { draft: true, deletedDocCount:drafts.deletedDocCount }} />
                         </>
                         
                         
